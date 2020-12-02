@@ -20,6 +20,7 @@ function Gallery(gallery) {
     // Event listeners to be bound when we open the modal
     window.addEventListener("keyup", handleKeyUp);
     nextButton.addEventListener("click", showNextImage);
+    prevButton.addEventListener("click", showPrevImage);
   }
 
   function closeModal() {
@@ -27,6 +28,7 @@ function Gallery(gallery) {
     // TODO add event listeners for clicks and keyboard..
     window.removeEventListener("keyup", handleKeyUp);
     nextButton.removeEventListener("click", showNextImage);
+    prevButton.removeEventListener("click", showPrevImage);
   }
 
   function handleClickOutside(e) {
@@ -36,11 +38,17 @@ function Gallery(gallery) {
   }
 
   function handleKeyUp(event) {
-    if (event.key === "Escape") closeModal();
+    if (event.key === "Escape") return closeModal();
+    if (event.key === "ArrowRight") return showNextImage();
+    if (event.key === "ArrowLeft") return showPrevImage();
   }
 
   function showNextImage() {
-    console.log(currentImage.nextElementSibling);
+    showImage(currentImage.nextElementSibling || gallery.firstElementChild);
+  }
+
+  function showPrevImage() {
+    showImage(currentImage.previousElementSibling || gallery.lastElementChild);
   }
 
   function showImage(el) {
@@ -61,6 +69,19 @@ function Gallery(gallery) {
   images.forEach((image) =>
     image.addEventListener("click", (e) => showImage(e.currentTarget))
   );
+
+  // loop over each image
+  images.forEach((image) => {
+    // attach an event listener for each image
+    image.addEventListener("keyup", (e) => {
+      // when that is keyip'd check if it was ente
+      if (e.key === "Enter") {
+        // if it was then show that image
+        showImage(e.currentTarget);
+      }
+    });
+  });
+
   modal.addEventListener("click", handleClickOutside);
 }
 
